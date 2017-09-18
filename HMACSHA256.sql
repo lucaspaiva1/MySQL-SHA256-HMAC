@@ -1,6 +1,9 @@
 /*
-Author: Kyle Konrad
+Original Author: Kyle Konrad
 Date: 1/19/2011
+
+Modified by: Karl Pierce
+Date: 9/18/2017
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,20 +19,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-DROP FUNCTION IF EXISTS HMACSHA1;
+DROP FUNCTION IF EXISTS HMACSHA256;
 
 -- here email is the message generate a HMAC for
 DELIMITER //
-CREATE FUNCTION HMACSHA1(secret_key VARCHAR(36), email VARCHAR(128)) RETURNS CHAR(40) DETERMINISTIC
+CREATE FUNCTION HMACSHA256(secret_key VARCHAR(36), val VARCHAR(128))
+  RETURNS CHAR(64) DETERMINISTIC
 BEGIN
 DECLARE ipad,opad BINARY(64);
 DECLARE hexkey CHAR(128);
-DECLARE hmac CHAR(40);
+DECLARE hmac CHAR(64);
 
 SET hexkey = RPAD(HEX(secret_key),128,"0");
 
 
-/* process in 64-bit blocks to avoid overflow when converting to decimal*/
+
 SET ipad = UNHEX(CONCAT(
 LPAD(CONV(CONV( MID(hexkey,1  ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
 LPAD(CONV(CONV( MID(hexkey,17 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
@@ -52,7 +56,7 @@ LPAD(CONV(CONV( MID(hexkey,97 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 
 LPAD(CONV(CONV( MID(hexkey,113,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0")
 ));
 
-SET hmac = SHA1(CONCAT(opad,UNHEX(SHA1(CONCAT(ipad,email)))));
+SET hmac = SHA2(CONCAT(opad,UNHEX(SHA2(CONCAT(ipad,val), '256'))), '256');
 
 RETURN hmac;
 

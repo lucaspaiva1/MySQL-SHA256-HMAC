@@ -1,12 +1,15 @@
-Author: Kyle Konrad
+Original Author: Kyle Konrad
 Date: 1/19/2011
 
+Modified by: Karl Pierce
+Date: 9/18/2017
 
-The file HMACSHA1.sql contains code to compute a hashed message authentication code using the SHA-1 hash.
+
+The file HMACSHA256.sql contains code to compute a hashed message authentication code using the SHA-256 hash.
 
 To import this function into an existing MySQL schema use the following at the command line:
 
-mysql -u<user> -D<database> < HMACSHA1.sql
+mysql -u<user> -D<database> < HMACSHA256.sql
 
 where <user> has the appropriate permissions on the <database> schema.
 
