@@ -58,7 +58,7 @@ LPAD(CONV(CONV( MID(hexkey,97 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 
 LPAD(CONV(CONV( MID(hexkey,113,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0")
 ));
 
-SET hmac = SHA2(CONCAT(opad,UNHEX(SHA2(CONCAT(ipad,val), '256'))), '256');
+SET hmac = REPLACE(REPLACE(REPLACE(TO_BASE64(UNHEX(SHA2(CONCAT(opad,UNHEX(SHA2(CONCAT(ipad,val), '256'))), '256'))), '+', '-'), '/', '_'), '=', '');
 
 RETURN hmac;
 
